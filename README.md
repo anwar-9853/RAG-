@@ -3,8 +3,20 @@
 
 A powerful **Retrieval-Augmented Generation (RAG)** application that allows you to "talk" to your PDF documents. This tool uses semantic search to find relevant information within your files and provides accurate, context-aware answers using LLMs.
 
----
+ #  SYSTEM DESIGN , ARCHETCTURAL DESIGN 
+[ PDF Docs ]          [ User Query ]
+         |                      |
+[ Text Chunking ]      [ Query Embedding ]
+         |                      |
+[ Embedding Model ] <--> [ Vector Search ]
+         |                      |
+[ Vector Store ] ------> [ Augmented Prompt ]
+                                |
+                         [ LLM (Generation) ]
+                                |
+                         [ Final Response ]
 
+   
 ## 🚀 Features
 * **PDF Parsing:** Extracts text from multi-page PDF documents effortlessly.
 * **Smart Text Chunking:** Breaks long text into manageable 1,000-character bites with a 150-character overlap to preserve context.
@@ -50,7 +62,7 @@ OPENAI_API_KEY=your_sk_or_v1_key_here
    streamlit run main.py
    ```
 
----
+
 
 ## 🧠 How It Works
 1.  **Extraction:** The app reads your uploaded PDF and converts it into a raw string of text.
