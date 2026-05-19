@@ -3,18 +3,64 @@
 
 A powerful **Retrieval-Augmented Generation (RAG)** application that allows you to "talk" to your PDF documents. This tool uses semantic search to find relevant information within your files and provides accurate, context-aware answers using LLMs.
 
- #  SYSTEM DESIGN , ARCHETCTURAL DESIGN 
-[ PDF Docs ]          [ User Query ]
-         |                      |
-[ Text Chunking ]      [ Query Embedding ]
-         |                      |
-[ Embedding Model ] <--> [ Vector Search ]
-         |                      |
-[ Vector Store ] ------> [ Augmented Prompt ]
-                                |
-                         [ LLM (Generation) ]
-                                |
-                         [ Final Response ]
+                    ┌─────────────────────┐
+                    │     User Uploads    │
+                    │       PDF File      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      PdfReader      │
+                    │   Extract PDF Text  │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ RecursiveCharacter  │
+                    │    TextSplitter     │
+                    │ chunk_size = 1000   │
+                    │ overlap = 150       │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ OpenAIEmbeddings    │
+                    │ Convert Chunks →    │
+                    │ Vector Embeddings   │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │       FAISS         │
+                    │   Vector Database   │
+                    │ Semantic Indexing   │
+                    └──────────┬──────────┘
+                               │
+              User Question    │
+         ─────────────────────▶│
+                               ▼
+                    ┌─────────────────────┐
+                    │ Similarity Search   │
+                    │ Retrieve Top Chunks │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    load_qa_chain    │
+                    │ Context + Question  │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │     ChatOpenAI      │
+                    │ GPT-3.5 Generation  │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Final AI Answer   │
+                    │  Display in UI      │
+                    └─────────────────────┘
 
    
 ## 🚀 Features
